@@ -1,8 +1,10 @@
 library(shiny)
 
 ui <- fluidPage(
+  # title of shiny app
   titlePanel("Gambler's Ruin: Exercise 5.2"),
   
+  # creat layout with sliders
   sidebarLayout(
     sidebarPanel(
       
@@ -38,6 +40,7 @@ server <- function(input, output) {
       })
   
   
+  # perform a random walk until player has no money or all money.
   solutions <- eventReactive(input$go, {
     ja_init=input$i_a
     jb_init=input$i_b
@@ -56,12 +59,22 @@ server <- function(input, output) {
   })
   
   
+  # plot random walk of the money from  player A
   output$Plot <- renderPlot({
-    plot(seq(1:length(solutions())),solutions(),'l',xlab = 'games [-]',ylab = 'money player A [$]',cex.lab=1.5, cex.axis=1.2, cex.main=1.5,ylim = c(0,(input$i_a+input$i_b)),main = "Random walk with given parameters")
+    plot(seq(1:length(solutions())),solutions(),'l',xlab = 'games [-]',
+         ylab = 'money player A [$]',cex.lab=1.5, cex.axis=1.2, cex.main=1.5,
+         ylim = c(0,(input$i_a+input$i_b)),
+         main = "Random walk with given parameters")
   })
   
-  output$Text <- renderText({
-    paste("Pr{X_n = 0 before X_n = N | X_0 = ",as.character(input$i_a),"} = ", as.character((((1-input$p)/input$p)^input$i_a-((1-input$p)/input$p)^(input$i_a+input$i_b))/(1-((1-input$p)/input$p)^(input$i_a+input$i_b))))
+  # calculates the probability that player A goes bankrupt 
+  # before he wins all the money.
+  
+    output$Text <- renderText({
+    paste("Pr{X_n = 0 before X_n = N | X_0 = ",as.character(input$i_a),"} = ",
+          as.character((((1-input$p)/input$p)^input$i_a-((1-input$p)/
+                              input$p)^(input$i_a+input$i_b))/(1-((1-input$p)/
+                                              input$p)^(input$i_a+input$i_b))))
   })
   
 }
